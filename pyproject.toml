@@ -1,0 +1,14 @@
+[project]
+name = "eng-assistant"
+version = "0.1.0"
+description = "A prototype engineering assistant AI agent"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "accelerate>=1.4.0",
+    "diffusers>=0.32.2",
+    "open-webui>=0.5.20",
+    "openai>=1.65.5",
+    "safetensors>=0.5.3",
+    "torch>=2.6.0",
+]
