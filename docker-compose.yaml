@@ -1,0 +1,89 @@
+services:
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui
+    networks:
+      - webui
+    ports:
+      - "3000:8080"
+    volumes:
+      - open-webui:/app/backend/data
+    environment:
+      WEBUI_AUTH: False
+      # Jupyter API config
+      ENABLE_CODE_INTERPRETER: True
+      CODE_EXECUTION_ENGINE: jupyter
+      CODE_EXECUTION_JUPYTER_URL: http://jupyter:8888
+      CODE_EXECUTION_JUPYTER_AUTH: token
+      CODE_EXECUTION_JUPYTER_AUTH_TOKEN: ${JUPYTER_TOKEN}
+      CODE_EXECUTION_JUPYTER_TIMEOUT: 300
+      CODE_INTERPRETER_ENGINE: jupyter
+      CODE_INTERPRETER_JUPYTER_URL: http://jupyter:8888
+      CODE_INTERPRETER_JUPYTER_AUTH: token
+      CODE_INTERPRETER_AUTH_TOKEN: ${JUPYTER_TOKEN}
+      CODE_INTERPRETER_TIMEOUT: 300
+      # Search API config
+      ENABLE_RAG_WEB_SEARCH: True
+      RAG_WEB_SEARCH_ENGINE: searxng
+      RAG_WEB_SEARCH_RESULT_COUNT: 3
+      RAG_WEB_SEARCH_CONCURRENT_REQUESTS: 10
+      SEARXNG_QUERY_URL: http://searxng:8080/search?q=<query>
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    depends_on:
+      - jupyter
+      - searxng
+
+  jupyter:
+    image: quay.io/jupyter/datascience-notebook
+    container_name: jupyter
+    volumes:
+      - jupyter:/home/jovyan/work
+    networks:
+      - webui
+    command: start-notebook.sh --ip=0.0.0.0
+    environment:
+      JUPYTER_LAB_ENABLE: yes
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
+    depends_on:
+      - webui
+
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    container_name: searxng
+    volumes:
+      - searxng:/etc/searxng:rw
+      - ./searxng/limiter.toml:/usr/local/searxng/searx/limiter.toml
+      - ./searxng/settings.yml:/usr/local/searxng/searx/settings.yml
+      - ./searxng/uwsgi.ini:/usr/local/searxng/searx/uwsgi.ini
+    networks:
+      - webui
+    environment:
+      SEARXNG_HOSTNAME: searxng:8080/
+      BASE_URL: http://searxng:8080/
+      INSTANCE_NAME: eng_assistant_test_searxng
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+networks:
+  webui:
+
+volumes:
+  searxng:
+  open-webui:
+  jupyter:

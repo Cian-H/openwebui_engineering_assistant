@@ -9,12 +9,13 @@
 
   languages.python = {
     enable = true;
-    uv = {
-      enable = true;
-      sync = {
-        enable = true;
-        allExtras = true;
-      };
+    uv.enable = true;
+  };
+
+  tasks = {
+    "eng-assistant:deploy-stack" = {
+      exec = "docker compose up -d";
+      before = ["devenv:enterShell"];
     };
   };
 }
