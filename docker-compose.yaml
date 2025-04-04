@@ -37,6 +37,7 @@ services:
     depends_on:
       - jupyter
       - searxng
+      - blender
 
   jupyter:
     image: quay.io/jupyter/datascience-notebook
@@ -80,6 +81,16 @@ services:
         max-size: "1m"
         max-file: "1"
 
+  blender:
+    build:
+      context: ./blender_server
+    container_name: blender
+    ports:
+      - "9090:8080"
+    networks:
+      - webui
+    restart: unless-stopped
+
 networks:
   webui:
 
@@ -87,3 +98,4 @@ volumes:
   searxng:
   open-webui:
   jupyter:
+  blender:

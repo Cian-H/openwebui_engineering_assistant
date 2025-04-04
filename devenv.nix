@@ -7,9 +7,12 @@
 }: {
   packages = [pkgs.git];
 
-  languages.python = {
-    enable = true;
-    uv.enable = true;
+  languages = {
+    python = {
+      enable = true;
+      uv.enable = true;
+    };
+    go.enable = true;
   };
 
   tasks = {
