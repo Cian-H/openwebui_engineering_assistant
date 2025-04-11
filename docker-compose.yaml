@@ -82,11 +82,8 @@ services:
         max-file: "1"
 
   blender:
-    build:
-      context: ./blender_server
+    image: ghcr.io/cian-h/simple_blender_server:main
     container_name: blender
-    ports:
-      - "9090:8080"
     networks:
       - webui
     restart: unless-stopped
