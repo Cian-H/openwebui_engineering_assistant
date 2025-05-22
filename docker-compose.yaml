@@ -10,8 +10,22 @@ services:
       - open-webui:/app/backend/data
     environment:
       WEBUI_AUTH: False
+      WEBUI_URL: "http://localhost:3000/"
+      ENABLE_PERSISTENT_CONFIG: True
+      # OpenAI Config
+      ENABLE_OPENAI_API: True
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      AUDIO_STT_ENGINE: openai
+      AUDIO_STT_OPENAI_API_KEY: ${OPENAI_API_KEY}
+      AUDIO_TTS_OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ENABLE_IMAGE_GENERATION: True
+      IMAGE_GENERATION_ENGINE: openai
+      IMAGE_GENERATION_MODEL: dall-e-3
+      IMAGE_SIZE: 1792x1024
+      IMAGES_OPENAI_API_KEY: ${OPENAI_API_KEY}
       # Jupyter API config
       ENABLE_CODE_INTERPRETER: True
+      ENABLE_CODE_EXECUTION: True
       CODE_EXECUTION_ENGINE: jupyter
       CODE_EXECUTION_JUPYTER_URL: http://jupyter:8888
       CODE_EXECUTION_JUPYTER_AUTH: token
