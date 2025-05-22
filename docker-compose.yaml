@@ -8,6 +8,11 @@ services:
       - "3000:8080"
     volumes:
       - open-webui:/app/backend/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
     environment:
       WEBUI_AUTH: False
       WEBUI_URL: "http://localhost:3000/"
@@ -86,6 +91,11 @@ services:
       - ./searxng/limiter.toml:/usr/local/searxng/searx/limiter.toml
       - ./searxng/settings.yml:/usr/local/searxng/searx/settings.yml
       - ./searxng/uwsgi.ini:/usr/local/searxng/searx/uwsgi.ini
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - webui
     environment:
@@ -111,6 +121,11 @@ services:
     container_name: chroma
     volumes:
       - chroma:/chroma/chroma
+    healthcheck:
+      test: [ "CMD", "/bin/bash", "-c", "cat < /dev/null > /dev/tcp/localhost/8000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - webui
     environment:
@@ -143,6 +158,11 @@ services:
   blender:
     image: ghcr.io/cian-h/simple_blender_server:main
     container_name: blender
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1212/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - webui
     restart: unless-stopped
