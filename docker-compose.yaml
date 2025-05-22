@@ -46,6 +46,11 @@ services:
       VECTOR_DB: chroma
       CHROMA_HTTP_HOST: http://chroma:8000
       CHROMA_HTTP_PORT: 8000
+      # Redis caching config
+      REDIS_URL: redis://valkey:6379/0
+      ENABLE_WEBSOCKET_SUPPORT: True
+      WEBSOCKET_MANAGER: redis
+      WEBSOCKET_REDIS_URL: redis://valkey:6379/1
     deploy:
       resources:
         reservations:
@@ -56,6 +61,7 @@ services:
       - jupyter
       - searxng
       - chromadb
+      - valkey
       - blender
 
   jupyter:
@@ -112,6 +118,28 @@ services:
       ANONYMIZED_TELEMETRY: True
     restart: unless-stopped
 
+  valkey:
+    image: docker.io/valkey/valkey:8.0.1-alpine
+    container_name: valkey
+    volumes:
+      - valkey:/data
+    command: "valkey-server --save 30 1"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    networks:
+      - webui
+
   blender:
     image: ghcr.io/cian-h/simple_blender_server:main
     container_name: blender
@@ -127,4 +155,5 @@ volumes:
   open-webui:
   jupyter:
   chroma:
+  valkey:
   blender:
