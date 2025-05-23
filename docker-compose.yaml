@@ -85,8 +85,6 @@ services:
     environment:
       JUPYTER_LAB_ENABLE: yes
       JUPYTER_TOKEN: ${JUPYTER_TOKEN}
-    depends_on:
-      - webui
 
   searxng:
     image: docker.io/searxng/searxng:latest
