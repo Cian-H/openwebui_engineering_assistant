@@ -117,7 +117,7 @@ services:
         max-file: "1"
 
   chroma:
-    image: docker.io/chromadb/chroma:latest
+    image: docker.io/chromadb/chroma:0.5.4
     container_name: chroma
     volumes:
       - chroma:/chroma/chroma
