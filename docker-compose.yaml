@@ -120,7 +120,7 @@ services:
     image: docker.io/chromadb/chroma:0.5.4
     container_name: chroma
     volumes:
-      - chroma:/chroma/chroma
+      - chroma:/data
     healthcheck:
       test: [ "CMD", "/bin/bash", "-c", "cat < /dev/null > /dev/tcp/localhost/8000" ]
       interval: 30s
