@@ -48,10 +48,6 @@ services:
       RAG_WEB_SEARCH_RESULT_COUNT: 3
       RAG_WEB_SEARCH_CONCURRENT_REQUESTS: 10
       SEARXNG_QUERY_URL: http://searxng:8080/search?q=<query>
-      # ChromaDB RAG config
-      VECTOR_DB: chroma
-      CHROMA_HTTP_HOST: http://chroma:8000
-      CHROMA_HTTP_PORT: 8000
       # Redis caching config
       REDIS_URL: redis://valkey:6379/0
       ENABLE_WEBSOCKET_SUPPORT: True
@@ -114,23 +110,6 @@ services:
       options:
         max-size: "1m"
         max-file: "1"
-
-  chroma:
-    image: docker.io/chromadb/chroma:0.5.4
-    container_name: chroma
-    volumes:
-      - chroma:/data
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8000/api/v1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - webui
-    environment:
-      IS_PERSISTENT: True
-      ANONYMIZED_TELEMETRY: True
-    restart: unless-stopped
 
   valkey:
     image: docker.io/valkey/valkey:8.0.1-alpine
