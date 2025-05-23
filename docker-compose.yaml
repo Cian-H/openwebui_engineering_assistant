@@ -91,11 +91,6 @@ services:
       - ./searxng/limiter.toml:/usr/local/searxng/searx/limiter.toml
       - ./searxng/settings.yml:/usr/local/searxng/searx/settings.yml
       - ./searxng/uwsgi.ini:/usr/local/searxng/searx/uwsgi.ini
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
     networks:
       - webui
     environment:
@@ -122,7 +117,7 @@ services:
     volumes:
       - chroma:/data
     healthcheck:
-      test: [ "CMD", "/bin/bash", "-c", "cat < /dev/null > /dev/tcp/localhost/8000" ]
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/api/v1" ]
       interval: 30s
       timeout: 10s
       retries: 3
