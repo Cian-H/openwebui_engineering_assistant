@@ -170,3 +170,4 @@ devenv.local.nix
 .pre-commit-config.yaml
 
 knowledge
+data

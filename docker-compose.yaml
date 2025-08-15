@@ -7,7 +7,7 @@ services:
     ports:
       - "3000:8080"
     volumes:
-      - open-webui:/app/backend/data
+      - ./data:/app/backend/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 60s
@@ -63,8 +63,6 @@ services:
       jupyter:
         condition: service_healthy
       searxng:
-        condition: service_healthy
-      chroma:
         condition: service_healthy
       valkey:
         condition: service_healthy
@@ -152,6 +150,5 @@ volumes:
   searxng:
   open-webui:
   jupyter:
-  chroma:
   valkey:
   blender:
